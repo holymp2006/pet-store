@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Support\Arr;
+use App\Casts\ProductMetadataCast;
 use Illuminate\Database\Eloquent\Collection;
 
 class ProductService
@@ -19,7 +21,18 @@ class ProductService
      */
     public function create(array $data): Product
     {
-        return Product::create($data);
+        $category = (new CategoryService())->getByUuid($data['category_uuid']);
+        return $category->products()->create(
+            Arr::only(
+                $data,
+                [
+                    'title',
+                    'price',
+                    'description',
+                    'metadata',
+                ]
+            )
+        );
     }
     public function getByUuid(string $uuid): Product
     {

@@ -15,7 +15,7 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->uuid('category_uuid')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->uuid('uuid');
             $table->string('title');
             $table->float('price');
@@ -24,8 +24,8 @@ class CreateProductsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('category_uuid')
-                ->references('uuid')
+            $table->foreign('category_id')
+                ->references('id')
                 ->on('categories')
                 ->onUpdate('cascade')
                 ->onDelete('set null');
