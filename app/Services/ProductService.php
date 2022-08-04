@@ -6,36 +6,46 @@ namespace App\Services;
 
 use App\Models\Product;
 use Illuminate\Support\Arr;
-use App\Casts\ProductMetadataCast;
 use Illuminate\Database\Eloquent\Collection;
 
-class ProductService
+final class ProductService
 {
     public function getAll(): Collection
     {
         return Product::all();
     }
     /**
-     * @param array<string> $data
-     * @return Product
+     * @param array<string, string> $data
      */
     public function create(array $data): Product
     {
-        $category = (new CategoryService())->getByUuid($data['category_uuid']);
-        return $category->products()->create(
+        return Product::create(
             Arr::only(
                 $data,
-                [
-                    'title',
-                    'price',
-                    'description',
-                    'metadata',
-                ]
+                $this->getFillable()
             )
         );
+    }
+    /**
+     * @param Product $product
+     * @param array<string, string> $data
+     */
+    public function update(Product $product, array $data): Product
+    {
+        $product->update(
+            Arr::only(
+                $data,
+                $this->getFillable()
+            )
+        );
+        return $product;
     }
     public function getByUuid(string $uuid): Product
     {
         return Product::where('uuid', $uuid)->firstOrFail();
+    }
+    protected function getFillable(): array
+    {
+        return (new Product())->getFillable();
     }
 }

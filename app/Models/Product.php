@@ -21,4 +21,8 @@ class Product extends Model
         'description',
         'metadata',
     ];
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

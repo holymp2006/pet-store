@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,8 +12,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::apiResource('product', ProductController::class);
+Route::controller(ProductController::class)
+    ->prefix('v1')
+    ->group(function () {
+        Route::get('products', 'index');
+        Route::get('product/{uuid}', 'show');
+        Route::post('product/create', 'store');
+        Route::put('product/{uuid}', 'update');
+    });

@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\AddsCategoryIdToValidatedArrayBag;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreProductRequest extends FormRequest
 {
+    use AddsCategoryIdToValidatedArrayBag;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -14,7 +16,7 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**

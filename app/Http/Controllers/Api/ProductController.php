@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Product;
 use App\Services\ProductService;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -32,14 +29,18 @@ class ProductController extends Controller
         return $this->productResource->make($product);
     }
 
-    public function show(Product $product)
+    public function show(string $uuid): JsonResource
     {
-        //
+        $product = $this->productService->getByUuid($uuid);
+        return $this->productResource->make($product);
     }
 
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, string $uuid)
     {
-        //
+        $product = $this->productService->getByUuid($uuid);
+        $this->productService->update($product, $request->validated());
+        
+        return $this->productResource->make($product);
     }
 
     public function destroy(Product $product)

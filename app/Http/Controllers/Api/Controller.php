@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Api\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;

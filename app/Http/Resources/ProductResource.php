@@ -16,10 +16,13 @@ class ProductResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'name' => $this->name,
+            'category_uuid' => $this->category->uuid,
+            'title' => $this->title,
             'price' => $this->price,
             'description' => $this->description,
-            'created_at' => $this->created_at,
+            'metadata' => $this->metadata,
+            'created_at' => $this->created_at->toDateTimeString(),
+            'updated_at' => $this->updated_at->toDateTimeString(),
         ];
     }
 }

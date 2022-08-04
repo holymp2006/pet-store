@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\File;
+use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
@@ -13,16 +16,19 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $category = Category::factory()->create();
+        $brand = Brand::factory()->create();
+        $file = File::factory()->create();
         return [
-            'category_uuid' => fake()->uuid(),
-            'uuid' => fake()->uuid(),
-            'title' => fake()->sentence(4),
-            'price' => fake()->randomFloat(2, 0, 100),
-            'description' => fake()->paragraph(2),
-            'metadata' => json_encode([
-                'brand' => factory(BrandFactory::class)->create()->uuid,
-                'image' => factory(FileFactory::class)->create()->uuid,
-            ]),
+            'category_id' => $category->id,
+            'uuid' => $this->faker->uuid(),
+            'title' => $this->faker->sentence(4),
+            'price' => $this->faker->randomFloat(2, 0, 100),
+            'description' => $this->faker->paragraph(2),
+            'metadata' => [
+                'brand' => $brand->uuid,
+                'image' => $file->uuid,
+            ],
         ];
     }
 }

@@ -8,7 +8,6 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use App\Services\ProductService;
-use Database\Factories\FileFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductServiceTest extends TestCase
@@ -22,7 +21,6 @@ class ProductServiceTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        // arrange
         $service = new ProductService();
         $brand = Brand::factory()->create();
         $file = File::factory()->create();
@@ -32,15 +30,13 @@ class ProductServiceTest extends TestCase
             'title' => 'Test Product',
             'price' => 10.45,
             'description' => 'This is a test product',
-            'metadata' => json_encode([
+            'metadata' => [
                 'brand' => $brand->uuid,
                 'image' => $file->uuid,
-            ]),
+            ],
         ];
-        // act
         $product = $service->create($data);
 
-        // assert
         $this->assertInstanceOf(Product::class, $product);
     }
 }
