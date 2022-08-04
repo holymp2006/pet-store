@@ -27,7 +27,6 @@ final class ProductService
         );
     }
     /**
-     * @param Product $product
      * @param array<string, string> $data
      */
     public function update(Product $product, array $data): Product

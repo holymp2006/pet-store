@@ -35,16 +35,11 @@ class ProductController extends Controller
         return $this->productResource->make($product);
     }
 
-    public function update(UpdateProductRequest $request, string $uuid)
+    public function update(UpdateProductRequest $request, string $uuid): JsonResource
     {
         $product = $this->productService->getByUuid($uuid);
         $this->productService->update($product, $request->validated());
-        
-        return $this->productResource->make($product);
-    }
 
-    public function destroy(Product $product)
-    {
-        //
+        return $this->productResource->make($product);
     }
 }

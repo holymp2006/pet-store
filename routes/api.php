@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(ProductController::class)
     ->prefix('v1')
-    ->group(function () {
+    ->group(function ():void {
         Route::get('products', 'index');
         Route::get('product/{uuid}', 'show');
         Route::post('product/create', 'store');

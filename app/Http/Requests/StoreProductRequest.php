@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
-use App\Traits\AddsCategoryIdToValidatedArrayBag;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Traits\AddsCategoryIdToValidatedArrayBag;
 
 class StoreProductRequest extends FormRequest
 {
@@ -14,7 +16,7 @@ class StoreProductRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -24,7 +26,7 @@ class StoreProductRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'category_uuid' => ['required', 'string', 'uuid', Rule::exists('categories', 'uuid')],
