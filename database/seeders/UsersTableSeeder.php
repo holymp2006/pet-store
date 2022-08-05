@@ -18,7 +18,7 @@ class UsersTableSeeder extends Seeder
         User::factory()->create([
             'email' => 'admin@buckhill.co.uk',
             'password' => 'admin',
-            'is_admin' => Role::ADMIN->value,
+            'is_admin' => Role::ADMIN,
         ]);
         User::factory()->create([
             'email' => 'user@buckhill.co.uk',

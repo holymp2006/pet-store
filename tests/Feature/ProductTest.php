@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Enums\Role;
 use Tests\TestCase;
 use App\Models\File;
+use App\Models\User;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Arr;
+use App\Services\JwtTokenService;
 
 class ProductTest extends TestCase
 {
@@ -50,7 +53,9 @@ class ProductTest extends TestCase
     /** @test */
     public function admin_can_create_a_product()
     {
-        //add act as admin user
+        $user = User::factory()->create([
+            'is_admin' => Role::ADMIN,
+        ]);
         $brand = Brand::factory()->create();
         $file = File::factory()->create();
         $category = Category::factory()->create();
@@ -64,7 +69,9 @@ class ProductTest extends TestCase
                 'image' => $file->uuid,
             ],
         ];
-        $response = $this->postJson('api/v1/product/create', $data);
+        $token = (new JwtTokenService)->createTokenForUser($user);
+        $response = $this->withToken($token)
+            ->postJson('api/v1/product/create', $data);
         $response->assertSuccessful();
         $this->assertDatabaseHas('products', Arr::only($data, ['title', 'price', 'description']));
         $response->assertJson(['data' => $data]);
@@ -72,7 +79,9 @@ class ProductTest extends TestCase
     /** @test */
     public function admin_can_update_a_product()
     {
-        //add act as admin user
+        $user = User::factory()->create([
+            'is_admin' => Role::ADMIN,
+        ]);
         $product = Product::factory()->create();
         $category = Category::factory()->create();
         $data = [
@@ -86,7 +95,9 @@ class ProductTest extends TestCase
             ],
         ];
         $now = now();
-        $response = $this->putJson('api/v1/product/' . $product->uuid, $data);
+        $token = (new JwtTokenService)->createTokenForUser($user);
+        $response = $this->withToken($token)
+            ->putJson('api/v1/product/' . $product->uuid, $data);
         $response->assertSuccessful();
         $this->assertDatabaseHas('products', Arr::only($data, ['title', 'price', 'description']));
         $response->assertJson([

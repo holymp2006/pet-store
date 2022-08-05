@@ -19,8 +19,12 @@ Route::prefix('v1')->group(function () {
         ->group(function (): void {
             Route::get('products', 'index');
             Route::get('product/{uuid}', 'show');
-            Route::post('product/create', 'store');
-            Route::put('product/{uuid}', 'update');
+            
+            Route::middleware(['auth:api', 'admin'])
+                ->group(function (): void {
+                    Route::post('product/create', 'store');
+                    Route::put('product/{uuid}', 'update');
+                });
         });
 
     Route::controller(OrderController::class)
