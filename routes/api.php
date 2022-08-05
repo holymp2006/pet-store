@@ -23,5 +23,8 @@ Route::prefix('v1')->group(function () {
             Route::put('product/{uuid}', 'update');
         });
 
-    
+    Route::controller(OrderController::class)
+        ->group(function (): void {
+            Route::get('orders', 'index');
+        });
 });

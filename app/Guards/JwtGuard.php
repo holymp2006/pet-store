@@ -12,12 +12,11 @@ use App\Services\UserService;
 use Lcobucci\JWT\Configuration;
 use Illuminate\Auth\Events\Failed;
 use Lcobucci\JWT\UnencryptedToken;
-use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-final class JwtGuard implements Guard
+final class JwtGuard
 {
     protected Authenticatable $user;
     protected string $name = 'jwt';
@@ -39,9 +38,8 @@ final class JwtGuard implements Guard
         }
         $this->parse($token);
         $user = (new JwtTokenService())->getUserByToken($token);
-        $this->setUser($user);
 
-        return $user;
+        return $this->user = $user;
     }
     public function getTokenForRequest(): ?string
     {
@@ -55,22 +53,16 @@ final class JwtGuard implements Guard
         if (!isset($credentials['password'])) {
             return false;
         }
-        if (!$user = (new UserService)->getUserByEmail($credentials['email'])) {
+        $user = (new UserService())->getUserByEmail($credentials['email']);
+        if (is_null($user)) {
             return false;
         }
         if (Hash::check($credentials['password'], $user->password)) {
-            dispatch(new Validated(
-                $this->name,
-                $user
-            ));
+            dispatch(new Validated( $this->name, $user ));
             return true;
         }
-
-        dispatch(new Failed(
-            $this->name,
-            $user,
-            $credentials
-        ));
+        dispatch(new Failed( $this->name, $user, $credentials ));
+        
         return false;
     }
 
@@ -91,12 +83,6 @@ final class JwtGuard implements Guard
         }
     }
 
-    public function setUser(Authenticatable $user): JwtGuard
-    {
-        $this->user = $user;
-
-        return $this;
-    }
     protected function parse(string $token): Token
     {
         $config = resolve(Configuration::class);

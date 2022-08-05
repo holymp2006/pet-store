@@ -46,7 +46,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_admin' => Role::class,
     ];
-    public function tokens()
+    public function tokens(): HasMany
     {
         return $this->hasMany(JwtToken::class);
     }

@@ -65,7 +65,7 @@ class JwtToken extends Model
     }
     protected function buildName(): string
     {
-        return $this->token_title = $this->user->first_name  . '-' . (string)now()->getTimestamp();
+        return $this->token_title = $this->user->first_name  . '-' . (string) now()->getTimestamp();
     }
     public function scopeExpired(Builder $query): Builder
     {
