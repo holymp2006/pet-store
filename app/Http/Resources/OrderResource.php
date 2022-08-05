@@ -16,11 +16,11 @@ class OrderResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'category_uuid' => $this->category->uuid,
-            'title' => $this->title,
-            'price' => $this->price,
-            'description' => $this->description,
-            'metadata' => $this->metadata,
+            'products' => $this->products,
+            'address' => $this->address,
+            'delivery_fee' => $this->delivery_fee,
+            'amount' => $this->amount,
+            'shipped_at' => $this->shipped_at?->toDateTimeString(),
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];

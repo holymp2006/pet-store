@@ -16,6 +16,12 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
+            'amount' => $this->faker->randomFloat(2, 0, 100),
+            'address' => [
+                'billing' => $this->faker->streetAddress(),
+                'shipping' => $this->faker->streetAddress(),
+            ],
+            'delivery_fee' => 10.00,
         ];
     }
 }

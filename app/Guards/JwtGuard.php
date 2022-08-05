@@ -18,13 +18,12 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 final class JwtGuard
 {
-    protected Authenticatable $user;
     protected string $name = 'jwt';
 
     public function __construct(
-        protected Request $request
+        protected Request $request,
+        protected ?Authenticatable $user = null
     ) {
-        $this->user = null;
     }
 
     public function user(): ?User
@@ -58,11 +57,11 @@ final class JwtGuard
             return false;
         }
         if (Hash::check($credentials['password'], $user->password)) {
-            dispatch(new Validated( $this->name, $user ));
+            dispatch(new Validated($this->name, $user));
             return true;
         }
-        dispatch(new Failed( $this->name, $user, $credentials ));
-        
+        dispatch(new Failed($this->name, $user, $credentials));
+
         return false;
     }
 

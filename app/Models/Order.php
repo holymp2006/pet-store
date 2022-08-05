@@ -16,6 +16,7 @@ class Order extends Model
     protected $casts = [
         'products' => AsArrayObject::class,
         'address' => AsArrayObject::class,
+        'shipped_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

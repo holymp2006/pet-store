@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
         });
 
     Route::controller(OrderController::class)
+        ->middleware('auth:api')
         ->group(function (): void {
             Route::get('orders', 'index');
         });

@@ -37,7 +37,7 @@ class AuthServiceProvider extends ServiceProvider
                 InMemory::base64Encoded(base64_encode(config('services.jwt.secret')))
             );
         });
-        Auth::viaRequest('jwt', function (Request $request): User {
+        Auth::viaRequest('jwt', function (Request $request): ?User {
             return (new JwtGuard($request))->user();
         });
     }

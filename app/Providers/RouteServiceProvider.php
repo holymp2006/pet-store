@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\OrderResource;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\ProductResource;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -47,6 +48,9 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->app->bind(ProductResource::class, function () {
             return new ProductResource(JsonResource::class);
+        });
+        $this->app->bind(OrderResource::class, function () {
+            return new OrderResource(JsonResource::class);
         });
     }
 }
