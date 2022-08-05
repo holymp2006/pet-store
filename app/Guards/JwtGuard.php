@@ -4,41 +4,46 @@ declare(strict_types=1);
 
 namespace App\Guards;
 
+use App\Models\User;
+use App\Services\JwtTokenService;
+use Lcobucci\JWT\Token;
 use Illuminate\Http\Request;
-use Illuminate\Auth\GuardHelpers;
+use App\Services\UserService;
+use Lcobucci\JWT\Configuration;
+use Illuminate\Auth\Events\Failed;
+use Lcobucci\JWT\UnencryptedToken;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 final class JwtGuard implements Guard
 {
-    use GuardHelpers;
+    protected Authenticatable $user;
+    protected string $name = 'jwt';
 
     public function __construct(
-        protected UserProvider $provider,
         protected Request $request
     ) {
+        $this->user = null;
     }
 
-    public function user(): Authenticatable | null
+    public function user(): ?User
     {
         if (!is_null($this->user)) {
             return $this->user;
         }
-
-        $user = null;
-
         $token = $this->getTokenForRequest();
-
-        if (!is_null($token)) {
-            $user = $this->provider->retrieveByCredentials([
-                $this->storageKey => $this->hash ? hash('sha256', $token) : $token,
-            ]);
+        if (is_null($token)) {
+            return $this->user = null;
         }
+        $this->parse($token);
+        $user = (new JwtTokenService())->getUserByToken($token);
+        $this->setUser($user);
 
-        return $this->user = $user;
+        return $user;
     }
-    public function getTokenForRequest(): string | null
+    public function getTokenForRequest(): ?string
     {
         return $this->request->bearerToken();
     }
@@ -50,11 +55,57 @@ final class JwtGuard implements Guard
         if (!isset($credentials['password'])) {
             return false;
         }
-
-        if ($this->provider->retrieveByCredentials($credentials)) {
+        if (!$user = (new UserService)->getUserByEmail($credentials['email'])) {
+            return false;
+        }
+        if (Hash::check($credentials['password'], $user->password)) {
+            dispatch(new Validated(
+                $this->name,
+                $user
+            ));
             return true;
         }
 
+        dispatch(new Failed(
+            $this->name,
+            $user,
+            $credentials
+        ));
         return false;
+    }
+
+    public function check(): bool
+    {
+        return !is_null($this->user());
+    }
+
+    public function guest(): bool
+    {
+        return !$this->check();
+    }
+
+    public function id(): int | string
+    {
+        if ($this->user()) {
+            return $this->user()->getAuthIdentifier();
+        }
+    }
+
+    public function setUser(Authenticatable $user): JwtGuard
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+    protected function parse(string $token): Token
+    {
+        $config = resolve(Configuration::class);
+        assert($config instanceof Configuration);
+
+        $token = $config->parser()->parse($token);
+
+        assert($token instanceof UnencryptedToken);
+
+        return $token;
     }
 }

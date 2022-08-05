@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(ProductController::class)
-    ->prefix('v1')
-    ->group(function ():void {
-        Route::get('products', 'index');
-        Route::get('product/{uuid}', 'show');
-        Route::post('product/create', 'store');
-        Route::put('product/{uuid}', 'update');
-    });
+Route::prefix('v1')->group(function () {
+    Route::controller(ProductController::class)
+        ->group(function (): void {
+            Route::get('products', 'index');
+            Route::get('product/{uuid}', 'show');
+            Route::post('product/create', 'store');
+            Route::put('product/{uuid}', 'update');
+        });
+
+    
+});

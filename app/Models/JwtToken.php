@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Str;
 use Lcobucci\JWT\Configuration;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,33 +24,54 @@ class JwtToken extends Model
     protected static function boot()
     {
         parent::boot();
-        static::created(function ($model): void {
-            $model->token = static::generateToken();
-            $model->save();
+        static::creating(function ($model): void {
+            $model->buildToken();
         });
     }
-    public static function generateToken(): string
+    public function buildToken(): void
     {
-        // $user = (new self)->user()->first();
-
         $config = resolve(Configuration::class);
         assert($config instanceof Configuration);
+        $now = new CarbonImmutable();
+        $expiresAt = $now->addHours(24);
 
-        $now  = new CarbonImmutable();
         $token = $config->builder()
             ->issuedBy(config('app.url'))
-            ->relatedTo(Str::random(8))
+            ->relatedTo($this->user->uuid)
             ->issuedAt($now)
-            ->expiresAt($now->addHours(24))
-            ->withClaim('name', Str::random(8))
-            ->withClaim('user_uuid', Str::uuid())
+            ->expiresAt($expiresAt)
+            ->withClaim('user_uuid', $this->user->uuid)
             ->getToken($config->signer(), $config->signingKey());
 
-        return $token->toString();
+        $this->unique_id = $token->toString();
+        $this->expires_at = $expiresAt->toDateTimeString();
+        $this->buildUserRestrictions();
+        $this->buildUserPermissions();
+        $this->buildName();
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    protected function buildUserRestrictions(): array
+    {
+        return $this->restrictions = [];
+    }
+    protected function buildUserPermissions(): array
+    {
+        return $this->permissions = [];
+    }
+    protected function buildName(): string
+    {
+        return $this->token_title = $this->user->first_name  . '-' . (string)now()->getTimestamp();
+    }
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->where('expires_at', '<', now());
+    }
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('expires_at', '>', now());
     }
 }

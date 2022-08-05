@@ -3,15 +3,13 @@
 namespace App\Models;
 
 use App\Enums\Role;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -43,4 +41,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_admin' => Role::class,
     ];
+    public function tokens()
+    {
+        return $this->hasMany(JwtToken::class);
+    }
+    public function isAdmin(): bool
+    {
+        return $this->is_admin === Role::ADMIN;
+    }
 }
