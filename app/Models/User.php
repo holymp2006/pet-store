@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use App\Enums\Role;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Traits\HasUuid;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
+    use HasUuid;
 
     /**
      * The attributes that are mass assignable.
@@ -45,8 +50,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(JwtToken::class);
     }
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
     public function isAdmin(): bool
     {
         return $this->is_admin === Role::ADMIN;
+    }
+    protected function setPasswordAttribute(string $value): void
+    {
+        $this->attributes['password'] = Hash::make($value);
     }
 }

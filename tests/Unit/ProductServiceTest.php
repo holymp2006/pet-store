@@ -8,12 +8,9 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use App\Services\ProductService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductServiceTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * @test
      */

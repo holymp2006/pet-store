@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Models\User;
 use App\Services\JwtTokenService;
 
 class JwtTokenServiceTest extends TestCase
@@ -10,10 +11,10 @@ class JwtTokenServiceTest extends TestCase
     /** @test
      *  @group auth
      */
-    public function it_generates_token()
+    public function it_generates_token_for_user()
     {
-        $token = (new JwtTokenService())->generateJwtToken();
-        dd($token);
+        $user = User::factory()->create();
+        $token = (new JwtTokenService())->createTokenForUser($user);
 
         $this->assertIsString($token);
     }

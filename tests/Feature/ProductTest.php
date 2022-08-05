@@ -8,11 +8,9 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Arr;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductTest extends TestCase
 {
-    use RefreshDatabase;
     /** @test */
     public function user_can_view_all_products()
     {

@@ -2,17 +2,22 @@
 
 namespace Tests\Feature;
 
-use App\Models\Order;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderStatus;
 
 class OrderTest extends TestCase
 {
-    use RefreshDatabase;
     /** @test */
     public function user_can_view_all_orders()
     {
-        $orders = Order::factory(5)->create();
+        $user = User::factory()->create();
+        $orderStatus = OrderStatus::get()->random();
+        $orders = Order::factory(5)->create([
+            'user_id' => $user->id,
+            'order_status_id' => $orderStatus->id,
+        ]);
         $response = $this->getJson('api/v1/orders');
         $order = $orders->first();
         $response->assertStatus(200)
