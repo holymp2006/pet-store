@@ -6,7 +6,6 @@ namespace App\Traits;
 
 use Illuminate\Support\Str;
 
-
 trait HasUuid
 {
     public static function bootHasUUID(): void

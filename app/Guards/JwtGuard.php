@@ -6,15 +6,15 @@ namespace App\Guards;
 
 use App\Models\User;
 use App\Services\JwtTokenService;
-use Lcobucci\JWT\Token;
-use Illuminate\Http\Request;
 use App\Services\UserService;
-use Lcobucci\JWT\Configuration;
 use Illuminate\Auth\Events\Failed;
-use Lcobucci\JWT\UnencryptedToken;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Token;
+use Lcobucci\JWT\UnencryptedToken;
 
 final class JwtGuard
 {

@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\OrderResource;
-use Illuminate\Support\Facades\Route;
 use App\Http\Resources\ProductResource;
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {

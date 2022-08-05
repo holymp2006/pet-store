@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Services\OrderService;
 use App\Http\Resources\OrderResource;
+use App\Services\OrderService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderController extends Controller

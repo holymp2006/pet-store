@@ -14,7 +14,7 @@ use Illuminate\Routing\Controller as BaseController;
  *    title="Pet Store API",
  *    version="1.0.0",
  * )
- * @OA\PathItem(path="/api")
+ * @OA\PathItem(path="/api/v1")
  */
 class Controller extends BaseController
 {

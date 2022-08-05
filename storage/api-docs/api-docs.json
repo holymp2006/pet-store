@@ -5,6 +5,38 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api": {}
+        "/api/v1": {},
+        "/orders/{uuid}": {
+            "put": {
+                "summary": "Updates a user",
+                "operationId": "74ba9170f66222602ff65c68f7246316",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Parameter with mutliple examples",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "An int value.",
+                                "value": "1"
+                            },
+                            "uuid": {
+                                "summary": "An UUID value.",
+                                "value": "0006faf6-7a61-426c-9034-579f2cfcfa83"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
     }
 }

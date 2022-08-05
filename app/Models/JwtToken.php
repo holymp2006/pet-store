@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
-use Lcobucci\JWT\Configuration;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Lcobucci\JWT\Configuration;
 
 class JwtToken extends Model
 {
@@ -22,13 +22,6 @@ class JwtToken extends Model
         'refreshed_at' => 'datetime',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model): void {
-            $model->buildToken();
-        });
-    }
     public function buildToken(): void
     {
         $config = resolve(Configuration::class);
@@ -50,10 +43,24 @@ class JwtToken extends Model
         $this->buildUserPermissions();
         $this->buildName();
     }
-
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->where('expires_at', '<', now());
+    }
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('expires_at', '>', now());
+    }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model): void {
+            $model->buildToken();
+        });
     }
     protected function buildUserRestrictions(): array
     {
@@ -66,13 +73,5 @@ class JwtToken extends Model
     protected function buildName(): string
     {
         return $this->token_title = $this->user->first_name  . '-' . (string) now()->getTimestamp();
-    }
-    public function scopeExpired(Builder $query): Builder
-    {
-        return $query->where('expires_at', '<', now());
-    }
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->where('expires_at', '>', now());
     }
 }
