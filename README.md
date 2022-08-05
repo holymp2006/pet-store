@@ -8,6 +8,7 @@
 4. Create a database.
 5. Set JWT_SECRET in .env.
 6. Add the database connection details to the .env file.
-7. Run migrations. `php artisan migrate`.
-8. Run seeds. `php artisan db:seed`.
-9. Serve project. `php artisan serve`.
+7. Run tests with `phpunit`.
+8. Run migrations. `php artisan migrate`.
+9. Run seeds. `php artisan db:seed`.
+10. Serve project. `php artisan serve`.
