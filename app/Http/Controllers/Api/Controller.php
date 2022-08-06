@@ -15,6 +15,16 @@ use Illuminate\Routing\Controller as BaseController;
  *    version="1.0.0",
  * )
  * @OA\PathItem(path="/api/v1")
+ * 
+ * @OA\Tag(
+ *     name="User",
+ *     description="User API endpoint"
+ *  )
+ * @OA\Tag(
+ *     name="Admin",
+ *     description="Admin API endpoint"
+ * )
+ *
  */
 class Controller extends BaseController
 {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Guards;
 
 use App\Models\User;
+use App\Providers\JwtUserProvider;
 use App\Services\JwtTokenService;
 use App\Services\UserService;
 use Illuminate\Auth\Events\Failed;
@@ -21,6 +22,7 @@ final class JwtGuard
     protected string $name = 'jwt';
 
     public function __construct(
+        protected JwtUserProvider $provider,
         protected Request $request,
         protected ?Authenticatable $user = null
     ) {
@@ -52,15 +54,17 @@ final class JwtGuard
         if (!isset($credentials['password'])) {
             return false;
         }
-        $user = (new UserService())->getUserByEmail($credentials['email']);
+        $user = $this->provider->retrieveByCredentials($credentials);
         if (is_null($user)) {
             return false;
         }
-        if (Hash::check($credentials['password'], $user->password)) {
-            dispatch(new Validated($this->name, $user));
+        if ($this->provider->validateCredentials($user, $credentials)) {
+            event(new Validated($this->name, $user));
+            $this->user = $user;
+
             return true;
         }
-        dispatch(new Failed($this->name, $user, $credentials));
+        event(new Failed($this->name, $user, $credentials));
 
         return false;
     }
@@ -81,7 +85,10 @@ final class JwtGuard
             return $this->user()->getAuthIdentifier();
         }
     }
-
+    public function attempt(array $credentials = []): bool
+    {
+        return $this->validate($credentials);
+    }
     protected function parse(string $token): Token
     {
         $config = resolve(Configuration::class);

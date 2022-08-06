@@ -19,7 +19,7 @@ Route::prefix('v1')->group(function () {
         ->group(function (): void {
             Route::get('products', 'index');
             Route::get('product/{uuid}', 'show');
-            
+
             Route::middleware(['auth:api', 'admin'])
                 ->group(function (): void {
                     Route::post('product/create', 'store');
@@ -31,5 +31,17 @@ Route::prefix('v1')->group(function () {
         ->middleware('auth:api')
         ->group(function (): void {
             Route::get('orders', 'index');
+        });
+
+    Route::controller(UserController::class)
+        ->group(function (): void {
+            Route::post('user/login', 'login');
+            Route::post('admin/login', 'login');
+            
+            Route::prefix('admin')
+                ->middleware(['auth:api', 'admin'])
+                ->group(function (): void {
+                    Route::get('user-listing', 'index');
+                });
         });
 });

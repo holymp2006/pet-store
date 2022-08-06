@@ -6,28 +6,42 @@
     },
     "paths": {
         "/api/v1": {},
-        "/orders/{uuid}": {
-            "put": {
-                "summary": "Updates a user",
-                "operationId": "74ba9170f66222602ff65c68f7246316",
+        "/api/v1/admin/user-listing": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List all users",
+                "operationId": "511ac4fb135547c85b0245f627e4e3a3",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Login a User account",
+                "operationId": "bffef4260a4d121b21a87bc257e22763",
                 "parameters": [
                     {
-                        "name": "uuid",
-                        "in": "path",
-                        "description": "Parameter with mutliple examples",
+                        "name": "email",
+                        "in": "query",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "examples": {
-                            "int": {
-                                "summary": "An int value.",
-                                "value": "1"
-                            },
-                            "uuid": {
-                                "summary": "An UUID value.",
-                                "value": "0006faf6-7a61-426c-9034-579f2cfcfa83"
-                            }
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -38,5 +52,15 @@
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "User",
+            "description": "User API endpoint"
+        },
+        {
+            "name": "Admin",
+            "description": "Admin API endpoint"
+        }
+    ]
 }

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -41,16 +42,21 @@ class RouteServiceProvider extends ServiceProvider
     protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by(optional($request->user())->id ?? $request->ip());
+            return Limit::perMinute(60)->by(optional(
+                $request->user()
+            )->id ?? $request->ip());
         });
     }
     protected function addBindings(): void
     {
-        $this->app->bind(ProductResource::class, function () {
+        $this->app->bind(ProductResource::class, function (): JsonResource {
             return new ProductResource(JsonResource::class);
         });
-        $this->app->bind(OrderResource::class, function () {
+        $this->app->bind(OrderResource::class, function (): JsonResource {
             return new OrderResource(JsonResource::class);
+        });
+        $this->app->bind(UserResource::class, function (): JsonResource {
+            return new UserResource(JsonResource::class);
         });
     }
 }
